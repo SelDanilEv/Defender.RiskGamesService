@@ -1,4 +1,4 @@
-﻿namespace Defender.ServiceTemplate.Infrastructure.Helpers;
+﻿namespace Defender.RiskGamesService.Infrastructure.Helpers;
 
 public class Helper
 {

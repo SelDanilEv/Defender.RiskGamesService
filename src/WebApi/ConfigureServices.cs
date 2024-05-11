@@ -7,7 +7,7 @@ using Defender.Common.Errors;
 using Defender.Common.Exceptions;
 using Defender.Common.Exstension;
 using Defender.Common.Helpers;
-using Defender.ServiceTemplate.Application.Configuration.Exstension;
+using Defender.RiskGamesService.Application.Configuration.Exstension;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,7 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
-namespace Defender.ServiceTemplate.WebUI;
+namespace Defender.RiskGamesService.WebUI;
 
 public static class ConfigureServices
 {
@@ -91,8 +91,8 @@ public static class ConfigureServices
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Version = "v1",
-                Title = "Service Template",
-                Description = "Service template",
+                Title = "Risk Games Service",
+                Description = "Risk Games Service",
             });
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

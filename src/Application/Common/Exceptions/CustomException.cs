@@ -1,7 +1,7 @@
 ﻿using Defender.Common.Errors;
 using Defender.Common.Exceptions;
 
-namespace Defender.ServiceTemplate.Application.Common.Exceptions;
+namespace Defender.RiskGamesService.Application.Common.Exceptions;
 
 public class CustomException : ServiceException
 {

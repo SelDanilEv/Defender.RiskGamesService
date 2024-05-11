@@ -1,6 +1,6 @@
 using Defender.Common.Mapping;
 
-namespace Defender.ServiceTemplate.Infrastructure.Mappings;
+namespace Defender.RiskGamesService.Infrastructure.Mappings;
 
 public class MappingProfile : BaseMappingProfile
 {

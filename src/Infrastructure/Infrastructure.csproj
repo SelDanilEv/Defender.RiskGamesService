@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <RootNamespace>Defender.ServiceTemplate.Infrastructure</RootNamespace>
-        <AssemblyName>Defender.ServiceTemplate.Infrastructure</AssemblyName>
+        <RootNamespace>Defender.RiskGamesService.Infrastructure</RootNamespace>
+        <AssemblyName>Defender.RiskGamesService.Infrastructure</AssemblyName>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>

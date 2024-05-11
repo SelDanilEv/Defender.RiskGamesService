@@ -1,7 +1,7 @@
-﻿using Defender.ServiceTemplate.Application.Common.Interfaces;
-using Defender.ServiceTemplate.Application.Common.Interfaces.Repositories;
+﻿using Defender.RiskGamesService.Application.Common.Interfaces;
+using Defender.RiskGamesService.Application.Common.Interfaces.Repositories;
 
-namespace Defender.ServiceTemplate.Infrastructure.Services;
+namespace Defender.RiskGamesService.Infrastructure.Services;
 
 public class Service : IService
 {

@@ -1,6 +1,6 @@
-﻿using Defender.ServiceTemplate.Domain.Entities;
+﻿using Defender.RiskGamesService.Domain.Entities;
 
-namespace Defender.ServiceTemplate.Application.Common.Interfaces.Repositories;
+namespace Defender.RiskGamesService.Application.Common.Interfaces.Repositories;
 
 public interface IDomainModelRepository
 {

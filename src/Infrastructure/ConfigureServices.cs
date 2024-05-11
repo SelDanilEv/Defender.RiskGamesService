@@ -1,17 +1,17 @@
 ﻿using System.Reflection;
 using Defender.Common.Clients.Identity;
-using Defender.ServiceTemplate.Application.Common.Interfaces;
-using Defender.ServiceTemplate.Application.Common.Interfaces.Repositories;
-using Defender.ServiceTemplate.Application.Common.Interfaces.Wrapper;
-using Defender.ServiceTemplate.Application.Configuration.Options;
-using Defender.ServiceTemplate.Infrastructure.Clients.Service;
-using Defender.ServiceTemplate.Infrastructure.Repositories.DomainModels;
-using Defender.ServiceTemplate.Infrastructure.Services;
+using Defender.RiskGamesService.Application.Common.Interfaces;
+using Defender.RiskGamesService.Application.Common.Interfaces.Repositories;
+using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
+using Defender.RiskGamesService.Application.Configuration.Options;
+using Defender.RiskGamesService.Infrastructure.Clients.Service;
+using Defender.RiskGamesService.Infrastructure.Repositories.DomainModels;
+using Defender.RiskGamesService.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Defender.ServiceTemplate.Infrastructure;
+namespace Defender.RiskGamesService.Infrastructure;
 
 public static class ConfigureServices
 {
@@ -52,7 +52,7 @@ public static class ConfigureServices
     }
 
     private static IServiceCollection RegisterApiClients(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         IConfiguration configuration)
     {
         services.RegisterIdentityClient(

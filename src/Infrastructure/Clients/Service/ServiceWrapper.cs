@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Defender.Common.Clients.Identity;
 using Defender.Common.Wrapper;
-using Defender.ServiceTemplate.Application.Common.Interfaces.Wrapper;
+using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
 
-namespace Defender.ServiceTemplate.Infrastructure.Clients.Service;
+namespace Defender.RiskGamesService.Infrastructure.Clients.Service;
 
 public class ServiceWrapper : BaseSwaggerWrapper, IServiceWrapper
 {

@@ -1,4 +1,4 @@
-﻿namespace Defender.ServiceTemplate.Application.Modules;
+﻿namespace Defender.RiskGamesService.Application.Modules;
 
 public class ValidationConstants
 {

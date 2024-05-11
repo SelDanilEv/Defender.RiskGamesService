@@ -1,4 +1,4 @@
-﻿namespace Defender.ServiceTemplate.Application.Configuration.Options;
+﻿namespace Defender.RiskGamesService.Application.Configuration.Options;
 
 public class ServiceOptions
 {

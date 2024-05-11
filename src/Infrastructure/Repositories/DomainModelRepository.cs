@@ -1,10 +1,10 @@
 ﻿using Defender.Common.Configuration.Options;
 using Defender.Common.DB.Repositories;
-using Defender.ServiceTemplate.Application.Common.Interfaces.Repositories;
-using Defender.ServiceTemplate.Domain.Entities;
+using Defender.RiskGamesService.Application.Common.Interfaces.Repositories;
+using Defender.RiskGamesService.Domain.Entities;
 using Microsoft.Extensions.Options;
 
-namespace Defender.ServiceTemplate.Infrastructure.Repositories.DomainModels;
+namespace Defender.RiskGamesService.Infrastructure.Repositories.DomainModels;
 
 public class DomainModelRepository : BaseMongoRepository<DomainModel>, IDomainModelRepository
 {

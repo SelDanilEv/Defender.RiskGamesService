@@ -1,9 +1,9 @@
-docker rm -f LocalServiceTemplate
-docker build . -t local-service-template && ^
-docker run -d --name LocalServiceTemplate -p 0000:80 ^
+docker rm -f LocalRiskGamesService
+docker build . -t local-risk-games-service && ^
+docker run -d --name LocalRiskGamesService -p 47060:80 ^
 --env-file ./../../secrets/secrets.local.list ^
 -e ASPNETCORE_ENVIRONMENT=DockerLocal ^
--it local-service-template
-echo finish local-service-template
+-it local-risk-games-service
+echo finish local-risk-games-service
 docker image prune -f
 pause
