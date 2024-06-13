@@ -1,15 +1,20 @@
 ﻿using System.Reflection;
-using Defender.Common.Clients.Identity;
-using Defender.RiskGamesService.Application.Common.Interfaces;
-using Defender.RiskGamesService.Application.Common.Interfaces.Repositories;
-using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
-using Defender.RiskGamesService.Application.Configuration.Options;
-using Defender.RiskGamesService.Infrastructure.Clients.Service;
-using Defender.RiskGamesService.Infrastructure.Repositories.DomainModels;
-using Defender.RiskGamesService.Infrastructure.Services;
+using Defender.RiskGamesService.Infrastructure.Repositories.Lottery;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Defender.Common.Clients.Wallet;
 using Microsoft.Extensions.Options;
+using Defender.RiskGamesService.Application.Configuration.Options;
+using Defender.RiskGamesService.Infrastructure.Clients.Wallet;
+using Defender.RiskGamesService.Infrastructure.Repositories.Transactions;
+using Defender.Common.DB.SharedStorage.Entities;
+using Defender.Mongo.MessageBroker.Extensions;
+using Microsoft.Extensions.Hosting;
+using Defender.Common.Extension;
+using Defender.Common.DB.SharedStorage.MessageBroker;
+using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
+using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Transactions;
+using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
 
 namespace Defender.RiskGamesService.Infrastructure;
 
@@ -17,36 +22,47 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         services
-            .RegisterServices()
             .RegisterRepositories()
             .RegisterApiClients(configuration)
-            .RegisterClientWrappers();
+            .RegisterClientWrappers()
+            .RegisterMessageBroker(environment);
 
         return services;
     }
 
     private static IServiceCollection RegisterClientWrappers(this IServiceCollection services)
     {
-        services.AddTransient<IServiceWrapper, ServiceWrapper>();
+        services.AddTransient<IWalletWrapper, WalletWrapper>();
 
         return services;
     }
 
-    private static IServiceCollection RegisterServices(this IServiceCollection services)
+    private static IServiceCollection RegisterMessageBroker(
+        this IServiceCollection services,
+        IHostEnvironment environment)
     {
-        services.AddTransient<IService, Service>();
+        services.AddTopicConsumer<TransactionStatusUpdatedEvent>(opt =>
+        {
+            opt.ApplyOptions(new TransactionStatusesTopicConsumerOptions(environment.GetAppEnvironment()));
+        });
 
         return services;
     }
 
     private static IServiceCollection RegisterRepositories(this IServiceCollection services)
     {
-        services.AddSingleton<IDomainModelRepository, DomainModelRepository>();
+        services.AddSingleton<ILotteryRepository, LotteryRepository>();
+        services.AddSingleton<ILotteryDrawRepository, LotteryDrawRepository>();
+        services.AddSingleton<ILotteryUserTicketRepository, LotteryUserTicketRepository>();
+
+        services.AddSingleton<ITransactionToTrackRepository, TransactionToTrackRepository>();
+        services.AddSingleton<IOutboxTransactionStatusRepository, OutboxTransactionStatusRepository>();
 
         return services;
     }
@@ -55,10 +71,11 @@ public static class ConfigureServices
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.RegisterIdentityClient(
+        services.RegisterWalletClient(
             (serviceProvider, client) =>
             {
-                client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IOptions<ServiceOptions>>().Value.Url);
+                client.BaseAddress = new Uri(
+                    serviceProvider.GetRequiredService<IOptions<WalletOptions>>().Value.Url);
             });
 
         return services;

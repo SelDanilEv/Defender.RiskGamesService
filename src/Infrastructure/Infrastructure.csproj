@@ -9,6 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Enums\**" />
+      <EmbeddedResource Remove="Enums\**" />
+      <None Remove="Enums\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Application\Application.csproj" />
     </ItemGroup>
 
@@ -75,10 +81,6 @@
 
     <ItemGroup>
       <Content Remove="C:\Users\dselitsky\.nuget\packages\mongodb.driver.core\2.16.1\build\..\runtimes\win\native\snappy32.dll" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Enums\" />
     </ItemGroup>
 
 </Project>

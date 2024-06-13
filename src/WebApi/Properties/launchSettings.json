@@ -1,12 +1,13 @@
 {
   "profiles": {
-    "WebUI": {
+    "WebApi": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local"
       },
-      "applicationUrl": "http://localhost:47060"
+      "applicationUrl": "https://localhost:47060"
     }
   }
 }

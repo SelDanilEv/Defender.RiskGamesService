@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 using Defender.Common.Enums;
 using Defender.Common.Errors;
 using Defender.Common.Exceptions;
-using Defender.Common.Exstension;
+using Defender.Common.Extension;
 using Defender.Common.Helpers;
-using Defender.RiskGamesService.Application.Configuration.Exstension;
+using Defender.RiskGamesService.Application.Configuration.Extension;
 using FluentValidation.AspNetCore;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,12 +16,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
-namespace Defender.RiskGamesService.WebUI;
+namespace Defender.RiskGamesService.WebApi;
 
 public static class ConfigureServices
 {
