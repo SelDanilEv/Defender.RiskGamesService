@@ -95,14 +95,12 @@ public class UserTicketManagementService(
 
         var userTickets = await GetUserTicketsByDrawNumberAsync(draw.DrawNumber);
 
-        List<Task> tasks = [];
-
         foreach (var userTicket in userTickets)
         {
             if (userTicket.PaymentTransactionId != null)
             {
-                tasks.Add(transactionManagementService
-                    .StopTrackTransactionAsync(userTicket.PaymentTransactionId));
+                await transactionManagementService
+                    .StopTrackTransactionAsync(userTicket.PaymentTransactionId);
             }
 
             var isWinning = false;
@@ -111,7 +109,7 @@ public class UserTicketManagementService(
             {
                 if (winning.Tickets.Contains(userTicket.TicketNumber))
                 {
-                    tasks.AddRange(await HandleWinningTicketAsync(userTicket, winning));
+                    await HandleWinningTicketAsync(userTicket, winning);
                     isWinning = true;
                     break;
                 }
@@ -126,19 +124,15 @@ public class UserTicketManagementService(
                 .Init(userTicket.Id)
                 .Set(x => x.Status, UserTicketStatus.Lost);
 
-            tasks.Add(userTicketRepository
-                .UpdateUserTicketAsync(updateRequest));
+            await userTicketRepository
+                .UpdateUserTicketAsync(updateRequest);
         }
-
-        await Task.WhenAll(tasks);
     }
 
-    private async Task<IEnumerable<Task>> HandleWinningTicketAsync(
+    private async Task HandleWinningTicketAsync(
         UserTicket userTicket,
         Winning winning)
     {
-        var tasks = new List<Task>();
-
         var transactionRequest = new TransactionRequest(
             userTicket.DrawNumber.ToString(),
             LotteryHelpers.
@@ -157,7 +151,7 @@ public class UserTicketManagementService(
         var startTransactionResult = await transactionManagementService
             .StartTransactionAsync(transactionRequest);
 
-        tasks.Add(startTransactionResult.CreateTransactionToTrackTask);
+        await startTransactionResult.CreateTransactionToTrackTask;
 
         var updateTicketRequest = UpdateModelRequest<UserTicket>
             .Init(userTicket.Id)
@@ -166,9 +160,6 @@ public class UserTicketManagementService(
             .Set(x => x.PrizeTransactionId,
                 startTransactionResult.Transaction.TransactionId);
 
-        tasks.Add(userTicketRepository.UpdateUserTicketAsync(
-            updateTicketRequest));
-
-        return tasks;
+        await userTicketRepository.UpdateUserTicketAsync(updateTicketRequest);
     }
 }
