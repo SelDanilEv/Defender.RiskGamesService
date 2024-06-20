@@ -19,4 +19,7 @@ public class UserTicket : IBaseModel
     public int PrizePaidAmount { get; set; }
     [BsonRepresentation(BsonType.String)]
     public UserTicketStatus Status { get; set; }
+
+    public DateTime PurchaseDate { get; set; }
+
 }

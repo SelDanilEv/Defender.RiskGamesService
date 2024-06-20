@@ -15,8 +15,8 @@ public class LotteryDrawRepository(IOptions<MongoDbOptions> mongoOption)
     public Task<PagedResult<LotteryDraw>> GetActiveLotteryDrawsAsync(PaginationRequest request)
     {
         var filter = FindModelRequest<LotteryDraw>
-            .Init(x => x.EndDate, DateTime.UtcNow, FilterType.Gt)
-            .Sort(x => x.EndDate, SortType.Desc);
+            .Init(x => x.EndDate, DateTime.UtcNow.AddSeconds(30), FilterType.Gt)
+            .Sort(x => x.EndDate, SortType.Asc);
 
         var settings = PaginationSettings<LotteryDraw>.FromPaginationRequest(request);
 

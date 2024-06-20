@@ -1,8 +1,8 @@
 ﻿using Defender.Common.Configuration.Options;
 using Defender.Common.DB.Model;
 using Defender.Common.DB.Repositories;
-using Defender.Common.DB.SharedStorage.Entities;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Transactions;
+using Defender.RiskGamesService.Domain.Entities.Transactions;
 using Defender.RiskGamesService.Domain.Enums;
 using Microsoft.Extensions.Options;
 

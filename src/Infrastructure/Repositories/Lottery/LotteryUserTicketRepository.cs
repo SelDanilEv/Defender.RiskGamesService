@@ -5,7 +5,6 @@ using Defender.Common.DB.Repositories;
 using Defender.Common.Errors;
 using Defender.Common.Exceptions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
-using Defender.RiskGamesService.Domain.Entities.Lottery.Draw;
 using Defender.RiskGamesService.Domain.Entities.Lottery.UserTickets;
 using Microsoft.Extensions.Options;
 
@@ -19,8 +18,7 @@ public class LotteryUserTicketRepository(IOptions<MongoDbOptions> mongoOption)
     {
         var findRequest = FindModelRequest<UserTicket>
             .Init(x => x.UserId, userId)
-            .Sort(x => x.DrawNumber, SortType.Desc)
-            .Sort(x => x.TicketNumber, SortType.Asc);
+            .Sort(x => x.PurchaseDate, SortType.Desc);
 
         var settings = PaginationSettings<UserTicket>.FromPaginationRequest(request);
 
@@ -41,7 +39,11 @@ public class LotteryUserTicketRepository(IOptions<MongoDbOptions> mongoOption)
 
     public async Task<List<UserTicket>> CreateUserTicketsAsync(List<UserTicket> newModels)
     {
-        newModels.ForEach(userTicket => userTicket.Status = UserTicketStatus.Requested);
+        newModels.ForEach(userTicket =>
+        {
+            userTicket.PurchaseDate = DateTime.UtcNow;
+            userTicket.Status = UserTicketStatus.Requested;
+        });
 
         try
         {
@@ -53,13 +55,6 @@ public class LotteryUserTicketRepository(IOptions<MongoDbOptions> mongoOption)
         }
 
         return newModels;
-    }
-
-    public async Task<UserTicket> CreateUserTicketAsync(UserTicket userTicket)
-    {
-        userTicket.Status = UserTicketStatus.Requested;
-
-        return await AddItemAsync(userTicket);
     }
 
     public async Task<UserTicket> UpdateUserTicketAsync(

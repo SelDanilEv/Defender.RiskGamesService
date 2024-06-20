@@ -51,6 +51,11 @@ public class UserTicketManagementService(
             throw new ServiceException(ErrorCode.BR_RGS_LotteryDrawIsNotActive);
         }
 
+        if (lotteryDraw.EndDate.AddMinutes(4) > DateTime.UtcNow)
+        {
+            throw new ServiceException(ErrorCode.BR_RGS_TicketPurchaseNotAllowed);
+        }
+
         var currentUserId = currentAccountAccessor.GetAccountId();
 
         var getUserTicketsTask = GetUserTicketsByDrawNumberAsync(request.DrawNumber);

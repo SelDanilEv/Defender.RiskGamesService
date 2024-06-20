@@ -12,8 +12,6 @@ public interface ILotteryUserTicketRepository
 
     Task<List<UserTicket>> GetUserTicketsByDrawNumberAsync(long drawNumber);
 
-    Task<UserTicket> CreateUserTicketAsync(UserTicket userTicket);
-
     Task<UserTicket> UpdateUserTicketAsync(UpdateModelRequest<UserTicket> request);
 
     Task<long> UpdateManyUserTicketsAsync(

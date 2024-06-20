@@ -2,8 +2,9 @@
 using MongoDB.Bson;
 using Defender.Common.Entities;
 using Defender.Common.DB.SharedStorage.Enums;
+using Defender.Common.DB.SharedStorage.Entities;
 
-namespace Defender.Common.DB.SharedStorage.Entities;
+namespace Defender.RiskGamesService.Domain.Entities.Transactions;
 
 public record OutboxTransactionStatus : IBaseModel
 {

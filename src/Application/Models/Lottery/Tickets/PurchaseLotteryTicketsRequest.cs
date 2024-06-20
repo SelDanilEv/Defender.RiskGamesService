@@ -41,6 +41,11 @@ public record PurchaseLotteryTicketsRequest
             throw new ServiceException(ErrorCode.BR_RGS_CurrencyIsNotAllowed);
         }
 
+        if (!draw.IsCustomBetAllowed && !draw.AllowedBets.Contains(Amount))
+        {
+            throw new ServiceException(ErrorCode.BR_RGS_ThisBetIsNotAllowed);
+        }
+
         if (Amount < draw.MinBetValue || Amount > draw.MaxBetValue)
         {
             throw new ServiceException(ErrorCode.BR_RGS_ThisBetIsNotAllowed);

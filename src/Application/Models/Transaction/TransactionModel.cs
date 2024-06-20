@@ -1,6 +1,6 @@
-﻿using Defender.Common.DB.SharedStorage.Entities;
-using Defender.Common.DB.SharedStorage.Enums;
+﻿using Defender.Common.DB.SharedStorage.Enums;
 using Defender.RiskGamesService.Application.Mappings;
+using Defender.RiskGamesService.Domain.Entities.Transactions;
 using Defender.RiskGamesService.Domain.Enums;
 
 namespace Defender.RiskGamesService.Application.Models.Transaction;

@@ -1,4 +1,4 @@
-﻿using Defender.Common.DB.SharedStorage.Entities;
+﻿using Defender.RiskGamesService.Domain.Entities.Transactions;
 
 namespace Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Transactions;
 

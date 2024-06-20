@@ -35,7 +35,7 @@ public class LotteryProcessingService(
                 .SetIfNotNull(x => x.Schedule, lottery.Schedule!.UpdateNextStartDate());
 
             tasks.Add(lotteryDrawRepository.CreateLotteryDrawAsync(draw));
-            _ = lotteryRepository.UpdateLotteryAsync(updateRequest);
+            tasks.Add(lotteryRepository.UpdateLotteryAsync(updateRequest));
         }
 
         await Task.WhenAll(tasks);

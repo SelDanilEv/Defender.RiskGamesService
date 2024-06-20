@@ -22,8 +22,10 @@ public class LotteryDraw : IBaseModel
             PrizeSetup = model.TicketsSetup?.PrizeSetup ?? new TicketsPrizeSetup(),
             AllowedCurrencies = model.TicketsSetup?.PriceSetup?.AllowedCurrencies
                 ?? [Currency.USD],
+            AllowedBets = model.TicketsSetup?.PriceSetup?.AllowedValues,
             MinBetValue = model.TicketsSetup?.PriceSetup?.MinValue ?? 0,
             MaxBetValue = model.TicketsSetup?.PriceSetup?.MaxValue ?? 0,
+            IsCustomBetAllowed = model.TicketsSetup?.PriceSetup?.IsCustomValueAllowed ?? false,
             MinTicketNumber = model.TicketsSetup!.StartTicketNumber,
             MaxTicketNumber = model.TicketsSetup!.StartTicketNumber
                 + model.TicketsSetup!.TicketsAmount - 1,
@@ -43,8 +45,10 @@ public class LotteryDraw : IBaseModel
     public TicketsPrizeSetup PrizeSetup { get; set; } = new TicketsPrizeSetup();
     [BsonRepresentation(BsonType.String)]
     public List<Currency> AllowedCurrencies { get; set; } = [Currency.USD];
+    public List<int> AllowedBets { get; set; } = [];
     public int MinBetValue { get; set; }
     public int MaxBetValue { get; set; }
+    public bool IsCustomBetAllowed { get; set; }
 
     public int MinTicketNumber { get; set; }
     public int MaxTicketNumber { get; set; }

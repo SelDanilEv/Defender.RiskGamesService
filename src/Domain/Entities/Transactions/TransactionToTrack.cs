@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using Defender.Common.Entities;
 using Defender.RiskGamesService.Domain.Enums;
 
-namespace Defender.Common.DB.SharedStorage.Entities;
+namespace Defender.RiskGamesService.Domain.Entities.Transactions;
 
 public record TransactionToTrack : IBaseModel
 {

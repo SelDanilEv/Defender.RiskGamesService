@@ -8,6 +8,7 @@ using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
 using Defender.RiskGamesService.Application.Factories.Transaction;
 using Defender.RiskGamesService.Application.Mappings;
 using Defender.RiskGamesService.Application.Models.Transaction;
+using Defender.RiskGamesService.Domain.Entities.Transactions;
 using Defender.RiskGamesService.Domain.Enums;
 
 namespace Defender.RiskGamesService.Application.Services.Transaction;

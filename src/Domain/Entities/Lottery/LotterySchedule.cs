@@ -36,6 +36,8 @@ public class LotterySchedule
     {
         var now = DateTime.UtcNow;
 
+        LastStartedDate = NextStartDate;
+
         while (NextStartDate < now)
         {
             NextStartDate = Type switch

@@ -11,10 +11,10 @@ using Defender.Common.DB.SharedStorage.Entities;
 using Defender.Mongo.MessageBroker.Extensions;
 using Microsoft.Extensions.Hosting;
 using Defender.Common.Extension;
-using Defender.Common.DB.SharedStorage.MessageBroker;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Transactions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
+using Defender.Common.DB.SharedStorage.Options;
 
 namespace Defender.RiskGamesService.Infrastructure;
 
