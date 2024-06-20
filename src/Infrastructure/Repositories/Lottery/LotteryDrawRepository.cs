@@ -2,6 +2,7 @@
 using Defender.Common.DB.Model;
 using Defender.Common.DB.Pagination;
 using Defender.Common.DB.Repositories;
+using Defender.Common.Exceptions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Domain.Entities.Lottery.Draw;
 using Microsoft.Extensions.Options;
@@ -9,9 +10,15 @@ using MongoDB.Driver;
 
 namespace Defender.RiskGamesService.Infrastructure.Repositories.Lottery;
 
-public class LotteryDrawRepository(IOptions<MongoDbOptions> mongoOption)
-        : BaseMongoRepository<LotteryDraw>(mongoOption.Value), ILotteryDrawRepository
+public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryDrawRepository
 {
+    public LotteryDrawRepository(IOptions<MongoDbOptions> mongoOption) : base(mongoOption.Value)
+    {
+        _mongoCollection.Indexes.CreateOne(new CreateIndexModel<LotteryDraw>(
+            Builders<LotteryDraw>.IndexKeys.Ascending(x => x.DrawNumber),
+            new CreateIndexOptions { Unique = true }));
+    }
+
     public Task<PagedResult<LotteryDraw>> GetActiveLotteryDrawsAsync(PaginationRequest request)
     {
         var filter = FindModelRequest<LotteryDraw>
@@ -34,13 +41,25 @@ public class LotteryDrawRepository(IOptions<MongoDbOptions> mongoOption)
 
     public async Task<LotteryDraw> CreateLotteryDrawAsync(LotteryDraw lotteryDraw)
     {
+        bool isUnique;
         do
         {
             lotteryDraw.DrawNumber = await GetNextDrawNumber();
+            try
+            {
+                await AddItemAsync(lotteryDraw);
+                isUnique = true;
+            }
+            catch (ServiceException ex) when (
+                ex.InnerException is MongoWriteException ex2 &&
+                ex2.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            {
+                isUnique = false;
+            }
         }
-        while (!await EnsureUniqueness(lotteryDraw.DrawNumber));
+        while (!isUnique);
 
-        return await AddItemAsync(lotteryDraw);
+        return lotteryDraw;
     }
 
     public async Task ProcessLotteryDrawsAsync(

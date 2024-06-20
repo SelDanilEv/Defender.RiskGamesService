@@ -51,7 +51,7 @@ public class UserTicketManagementService(
             throw new ServiceException(ErrorCode.BR_RGS_LotteryDrawIsNotActive);
         }
 
-        if (DateTime.UtcNow.AddMinutes(4)  > lotteryDraw.EndDate)
+        if (DateTime.UtcNow.AddMinutes(4) > lotteryDraw.EndDate)
         {
             throw new ServiceException(ErrorCode.BR_RGS_TicketPurchaseNotAllowed);
         }
