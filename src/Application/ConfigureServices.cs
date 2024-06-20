@@ -30,8 +30,6 @@ public static class ConfigureServices
         return services;
     }
 
-
-
     private static IServiceCollection RegisterBackgroundServices(
         this IServiceCollection services)
     {
@@ -54,7 +52,7 @@ public static class ConfigureServices
 
     private static IServiceCollection RegisterFactory(this IServiceCollection services)
     {
-        services.AddSingleton<TransactionHandlerFactory>();
+        services.AddScoped<TransactionHandlerFactory>();
 
         services.AddScoped<LotteryTransactionHandler>();
         services.AddScoped<StartRechargeTransactionHandler>();
