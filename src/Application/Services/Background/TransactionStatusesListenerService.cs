@@ -11,7 +11,7 @@ namespace Defender.RiskGamesService.Application.Services.Background;
 
 public class TransactionStatusesListenerService(
         IServiceScopeFactory scopeFactory)
-    : BackgroundService, IDisposable
+    : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
