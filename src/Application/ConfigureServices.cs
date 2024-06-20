@@ -52,11 +52,11 @@ public static class ConfigureServices
 
     private static IServiceCollection RegisterFactory(this IServiceCollection services)
     {
-        services.AddScoped<TransactionHandlerFactory>();
+        services.AddSingleton<TransactionHandlerFactory>();
 
-        services.AddScoped<LotteryTransactionHandler>();
-        services.AddScoped<StartRechargeTransactionHandler>();
-        services.AddScoped<StartPaymentTransactionHandler>();
+        services.AddSingleton<LotteryTransactionHandler>();
+        services.AddSingleton<StartRechargeTransactionHandler>();
+        services.AddSingleton<StartPaymentTransactionHandler>();
 
         return services;
     }
