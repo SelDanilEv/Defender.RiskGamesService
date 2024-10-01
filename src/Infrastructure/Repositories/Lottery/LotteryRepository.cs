@@ -53,15 +53,15 @@ public class LotteryRepository(IOptions<MongoDbOptions> mongoOption)
         return AddItemAsync(newLottery);
     }
 
-    public async Task<LotteryModel> UpdateLotteryAsync(UpdateModelRequest<LotteryModel> request)
+    public Task<LotteryModel> UpdateLotteryAsync(UpdateModelRequest<LotteryModel> request)
     {
         request.SetIfNotNull(x => x.UpdatedDate, DateTime.UtcNow);
 
-        return await UpdateItemAsync(request);
+        return UpdateItemAsync(request);
     }
 
-    public async Task DeleteLotteryAsync(Guid lotteryId)
+    public Task DeleteLotteryAsync(Guid lotteryId)
     {
-        await RemoveItemAsync(lotteryId);
+        return RemoveItemAsync(lotteryId);
     }
 }
