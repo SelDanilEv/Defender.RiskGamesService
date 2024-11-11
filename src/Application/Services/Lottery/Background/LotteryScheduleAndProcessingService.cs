@@ -1,47 +1,42 @@
 ﻿using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Defender.RiskGamesService.Application.Services.Lottery.Background;
 
-public class LotteryScheduleAndProcessingService(
-        ILotteryProcessingService lotteryProcessingService)
-    : IHostedService, IDisposable
+public class LotteryScheduleAndProcessingService : BackgroundService
 {
-    private Timer? _timer;
-    private bool _isRunning = false;
+    private readonly ILotteryProcessingService _lotteryProcessingService;
+    private readonly ILogger<LotteryScheduleAndProcessingService> _logger;
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public LotteryScheduleAndProcessingService(ILotteryProcessingService lotteryProcessingService, ILogger<LotteryScheduleAndProcessingService> logger)
     {
-        _timer = new Timer(async _ => await Retry(null, cancellationToken),
-            null, TimeSpan.FromMinutes(0), TimeSpan.FromMinutes(1));
-        return Task.CompletedTask;
+        _lotteryProcessingService = lotteryProcessingService;
+        _logger = logger;
     }
 
-    private async Task Retry(object? state, CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (_isRunning)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            return;
+            var timer = Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+
+            try
+            {
+                await _lotteryProcessingService.ScanAndProcessLotteries();
+            }
+            catch (TaskCanceledException)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing lottery draws");
+            }
+            finally
+            {
+                await timer;
+            }
         }
-
-        _isRunning = true;
-
-        if (!stoppingToken.IsCancellationRequested)
-        {
-            await lotteryProcessingService.ScanAndProcessLotteries();
-        }
-
-        _isRunning = false;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _timer?.Change(Timeout.Infinite, 0);
-        return Task.CompletedTask;
-    }
-
-    public void Dispose()
-    {
-        _timer?.Dispose();
     }
 }
