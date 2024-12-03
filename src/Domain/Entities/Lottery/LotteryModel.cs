@@ -1,11 +1,14 @@
 ﻿using Defender.Common.Entities;
 using Defender.RiskGamesService.Domain.Entities.Lottery.TicketsSettings;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Defender.RiskGamesService.Domain.Entities.Lottery;
 
 public class LotteryModel : IBaseModel
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.String)]
     public Guid Id { get; set; }
     public string? Name { get; set; }
     public Dictionary<string, string>? PublicNames { get; set; }
@@ -17,8 +20,8 @@ public class LotteryModel : IBaseModel
 
     [BsonElement(nameof(IncomePercentage))]
     public int IncomePercentage =>
-        (this.TicketsSetup?.TicketsAmount * 100  - 
+        (this.TicketsSetup?.TicketsAmount * 100 -
         this.TicketsSetup?.PrizeSetup?.Prizes?.Sum(
-            prize => prize.TicketsAmount * prize.Coefficient)) 
+            prize => prize.TicketsAmount * prize.Coefficient))
         ?? -1;
 }

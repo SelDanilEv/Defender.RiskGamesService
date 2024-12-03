@@ -1,5 +1,5 @@
-﻿using Defender.RiskGamesService.Domain.Entities.Lottery.TicketsSettings;
-using Defender.RiskGamesService.Domain.Entities.Lottery;
+﻿using Defender.RiskGamesService.Domain.Entities.Lottery;
+using Defender.RiskGamesService.Domain.Entities.Lottery.TicketsSettings;
 
 namespace Defender.RiskGamesService.Application.DTOs.Lottery;
 

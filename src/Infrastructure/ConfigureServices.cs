@@ -1,20 +1,20 @@
 ﻿using System.Reflection;
-using Defender.RiskGamesService.Infrastructure.Repositories.Lottery;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Defender.Common.Clients.Wallet;
-using Microsoft.Extensions.Options;
-using Defender.RiskGamesService.Application.Configuration.Options;
-using Defender.RiskGamesService.Infrastructure.Clients.Wallet;
-using Defender.RiskGamesService.Infrastructure.Repositories.Transactions;
 using Defender.Common.DB.SharedStorage.Entities;
-using Defender.Mongo.MessageBroker.Extensions;
-using Microsoft.Extensions.Hosting;
+using Defender.Common.DB.SharedStorage.Options;
 using Defender.Common.Extension;
+using Defender.Mongo.MessageBroker.Extensions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Transactions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
-using Defender.Common.DB.SharedStorage.Options;
+using Defender.RiskGamesService.Application.Configuration.Options;
+using Defender.RiskGamesService.Infrastructure.Clients.Wallet;
+using Defender.RiskGamesService.Infrastructure.Repositories.Lottery;
+using Defender.RiskGamesService.Infrastructure.Repositories.Transactions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Defender.RiskGamesService.Infrastructure;
 

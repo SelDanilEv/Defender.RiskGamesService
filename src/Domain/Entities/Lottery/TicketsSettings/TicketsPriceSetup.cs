@@ -1,6 +1,6 @@
 ﻿using Defender.RiskGamesService.Domain.Enums;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Defender.RiskGamesService.Domain.Entities.Lottery.TicketsSettings;
 

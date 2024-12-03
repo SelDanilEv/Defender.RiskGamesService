@@ -1,11 +1,11 @@
 ﻿using Defender.Common.Errors;
-using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
-using FluentValidation;
 using Defender.Common.Extension;
-using MediatR;
+using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Application.Models.Lottery.Tickets;
+using FluentValidation;
+using MediatR;
 
-namespace Defender.RiskGamesService.Application.Modules.Lottery.Commands;
+namespace Defender.RiskGamesService.Application.Modules.Lottery.Commands.Tickets;
 
 public record PurchaseLotteryTicketCommand
     : PurchaseLotteryTicketsRequest, IRequest<IEnumerable<int>>

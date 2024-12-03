@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Defender.Common.Clients.Wallet;
-using Defender.Common.DB.SharedStorage.Entities;
 using Defender.Common.Helpers;
 using Defender.Common.Interfaces;
 using Defender.Common.Wrapper.Internal;
@@ -46,7 +45,7 @@ public class WalletWrapper(
                 Currency = MappingHelper.MapEnum
                     (currency, StartPaymentTransactionCommandCurrency.Unknown),
                 TransactionPurpose = MappingHelper.MapEnum
-                    (MapTransactionPurpose(gameType), 
+                    (MapTransactionPurpose(gameType),
                     StartPaymentTransactionCommandTransactionPurpose.NoPurpose),
                 Comment = comment,
             };
@@ -74,7 +73,7 @@ public class WalletWrapper(
                 Currency = MappingHelper.MapEnum
                     (currency, StartRechargeTransactionCommandCurrency.Unknown),
                 TransactionPurpose = MappingHelper.MapEnum
-                    (MapTransactionPurpose(gameType), 
+                    (MapTransactionPurpose(gameType),
                     StartRechargeTransactionCommandTransactionPurpose.NoPurpose),
                 Comment = comment,
             };

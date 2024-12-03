@@ -5,13 +5,13 @@ using Defender.Common.Attributes;
 using Defender.Common.Consts;
 using Defender.Common.DB.Pagination;
 using Defender.RiskGamesService.Application.DTOs.Lottery;
-using Defender.RiskGamesService.Application.Modules.Lottery.Commands;
+using Defender.RiskGamesService.Application.Modules.Lottery.Commands.Tickets;
 using Defender.RiskGamesService.Application.Modules.Lottery.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Defender.RiskGamesService.WebApi.Controllers.V1;
+namespace WebApi.Controllers.V1.Lottery;
 
 public class LotteryDrawController(IMediator mediator, IMapper mapper)
     : BaseApiController(mediator, mapper)

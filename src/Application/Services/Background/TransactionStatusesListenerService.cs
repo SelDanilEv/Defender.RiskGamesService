@@ -1,6 +1,6 @@
 ﻿using Defender.Common.DB.SharedStorage.Entities;
 using Defender.Common.DB.SharedStorage.Enums;
-using Defender.Mongo.MessageBroker.Configuration;
+using Defender.Mongo.MessageBroker.Configuration.Subscribe;
 using Defender.Mongo.MessageBroker.Interfaces.Topic;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
 using Microsoft.Extensions.DependencyInjection;

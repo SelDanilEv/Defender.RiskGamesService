@@ -7,7 +7,6 @@ using Defender.Common.DB.Pagination;
 using Defender.RiskGamesService.Application.DTOs.Lottery;
 using Defender.RiskGamesService.Application.Modules.Lottery.Commands;
 using Defender.RiskGamesService.Application.Modules.Lottery.Queries;
-using Defender.RiskGamesService.WebApi.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

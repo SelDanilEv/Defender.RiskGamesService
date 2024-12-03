@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using Defender.Common.DB.Pagination;
+﻿using Defender.Common.DB.Pagination;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Domain.Entities.Lottery.Draw;
 using FluentValidation;
-using Defender.Common.Extension;
 using MediatR;
 
 namespace Defender.RiskGamesService.Application.Modules.Lottery.Queries;

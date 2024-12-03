@@ -1,5 +1,4 @@
 using Defender.Common.Clients.Wallet;
-using Defender.Common.DB.SharedStorage.Entities;
 using Defender.Common.Mapping;
 using Defender.RiskGamesService.Application.Models.Transaction;
 

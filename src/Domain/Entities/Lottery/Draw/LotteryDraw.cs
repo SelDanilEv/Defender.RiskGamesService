@@ -35,9 +35,12 @@ public class LotteryDraw : IBaseModel
         };
     }
 
+    [BsonId]
+    [BsonRepresentation(BsonType.String)]
     public Guid Id { get; set; }
     public Dictionary<string, string> PublicNames { get; set; } = [];
     public long DrawNumber { get; set; }
+    [BsonGuidRepresentation(GuidRepresentation.CSharpLegacy)]
     public Guid LotteryId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

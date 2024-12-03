@@ -7,8 +7,7 @@ public static class LotteryHelpers
             $"{drawNumber}: {string.Join(", ", tickets)}";
     public static string LotteryPrizeTransactionComment(
         long drawNumber, int ticket, int bet, int coefficient) =>
-            $"{drawNumber} ({ticket}): {AsCurrency(bet)} * {coefficient}% = {
-                AsCurrency(
+            $"{drawNumber} ({ticket}): {AsCurrency(bet)} * {coefficient}% = {AsCurrency(
                     CalculateLotteryPrizeAmount(bet, coefficient))}";
 
     public static int CalculateLotteryPrizeAmount(int amount, int coefficient)

@@ -1,16 +1,16 @@
 ﻿using System.Reflection;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
+using Defender.RiskGamesService.Application.Factories.Transaction;
+using Defender.RiskGamesService.Application.Handlers.Transaction;
+using Defender.RiskGamesService.Application.Services.Background;
+using Defender.RiskGamesService.Application.Services.Lottery;
+using Defender.RiskGamesService.Application.Services.Lottery.Background;
+using Defender.RiskGamesService.Application.Services.Lottery.Tickets;
+using Defender.RiskGamesService.Application.Services.Transaction;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Defender.RiskGamesService.Application.Services.Background;
-using Defender.RiskGamesService.Application.Services.Lottery.Background;
-using Defender.RiskGamesService.Application.Services.Lottery.Tickets;
-using Defender.RiskGamesService.Application.Services.Lottery;
-using Defender.RiskGamesService.Application.Services.Transaction;
-using Defender.RiskGamesService.Application.Handlers.Transaction;
-using Defender.RiskGamesService.Application.Factories.Transaction;
 
 namespace Defender.RiskGamesService.Application;
 

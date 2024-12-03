@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 namespace Defender.RiskGamesService.Infrastructure.Repositories.Transactions;
 
 public class TransactionToTrackRepository(IOptions<MongoDbOptions> mongoOption)
-    : BaseMongoRepository<TransactionToTrack>(mongoOption.Value), 
+    : BaseMongoRepository<TransactionToTrack>(mongoOption.Value),
         ITransactionToTrackRepository
 {
     public async Task<List<TransactionToTrack>> GetTransactionsAsync(

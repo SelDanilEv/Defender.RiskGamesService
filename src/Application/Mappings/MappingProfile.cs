@@ -4,7 +4,7 @@ using Defender.RiskGamesService.Domain.Entities.Lottery;
 using Defender.RiskGamesService.Domain.Entities.Lottery.Draw;
 using Defender.RiskGamesService.Domain.Entities.Lottery.UserTickets;
 
-namespace Defender.RiskGamesService.Application.Common.Mappings;
+namespace Defender.RiskGamesService.Application.Mappings;
 
 public class MappingProfile : BaseMappingProfile
 {
