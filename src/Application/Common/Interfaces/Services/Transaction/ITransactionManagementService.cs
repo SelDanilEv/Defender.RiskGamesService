@@ -7,7 +7,7 @@ namespace Defender.RiskGamesService.Application.Common.Interfaces.Services.Trans
 
 public interface ITransactionManagementService
 {
-    Task ScanAndProccessOutboxTableAsync();
+    Task ScanAndProcessOutboxTableAsync();
     Task ProcessOutboxTransactionAsync(OutboxTransactionStatus transactionStatus);
     Task HandleTransactionStatusUpdatedEvent(TransactionStatusUpdatedEvent @event);
     Task<AnonymousTransactionModel?> TryGetTransactionInfoAsync(string? transactionId);

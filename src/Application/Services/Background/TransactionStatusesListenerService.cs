@@ -15,10 +15,10 @@ public class TransactionStatusesListenerService(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await ScanAndProccessOutboxTableAsync(stoppingToken);
+        await ScanAndProcessOutboxTableAsync(stoppingToken);
     }
 
-    private async Task ScanAndProccessOutboxTableAsync(CancellationToken stoppingToken)
+    private async Task ScanAndProcessOutboxTableAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {

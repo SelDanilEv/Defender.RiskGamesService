@@ -20,7 +20,7 @@ public class TransactionManagementService(
         TransactionHandlerFactory transactionHandlerFactory)
     : ITransactionManagementService
 {
-    public async Task ScanAndProccessOutboxTableAsync()
+    public async Task ScanAndProcessOutboxTableAsync()
     {
         var outboxTransactions = await outboxTransactionStatusRepository.GetAllAsync();
 
@@ -32,8 +32,8 @@ public class TransactionManagementService(
     public async Task ProcessOutboxTransactionAsync(
         OutboxTransactionStatus transactionStatus)
     {
-        if (await outboxTransactionStatusRepository
-            .TryLockTransactionStatusToHandleAsync(transactionStatus.Id) == false)
+        if (!await outboxTransactionStatusRepository
+            .TryLockTransactionStatusToHandleAsync(transactionStatus.Id))
             return;
 
         var isHandled = await HandleTransactionStatusUpdatedAsync(
