@@ -19,14 +19,13 @@ public class LotteryProcessingService(
     {
         await ScheduleDraws();
 
-        await lotteryDrawRepository.ProcessLotteryDrawsAsync(HangleLotteryDraw);
+        await lotteryDrawRepository.ProcessLotteryDrawsAsync(HandleLotteryDraw);
     }
 
     private async Task ScheduleDraws()
     {
         var lotteries = await lotteryRepository.GetAllLotteriesToScheduleAsync();
 
-        var tasks = new List<Task>(lotteries.Count);
         foreach (var lottery in lotteries)
         {
             var draw = LotteryDraw.Create(lottery);
@@ -34,14 +33,15 @@ public class LotteryProcessingService(
                 .Init(lottery.Id)
                 .SetIfNotNull(x => x.Schedule, lottery.Schedule!.UpdateNextStartDate());
 
-            tasks.Add(lotteryDrawRepository.CreateLotteryDrawAsync(draw));
-            tasks.Add(lotteryRepository.UpdateLotteryAsync(updateRequest));
+            await Task.WhenAll(
+                lotteryDrawRepository.CreateLotteryDrawAsync(draw),
+                lotteryRepository.UpdateLotteryAsync(updateRequest)
+            );
         }
 
-        await Task.WhenAll(tasks);
     }
 
-    private async Task HangleLotteryDraw(LotteryDraw draw)
+    private async Task HandleLotteryDraw(LotteryDraw draw)
     {
         var numbers = Enumerable.Range(
             draw.MinTicketNumber,
