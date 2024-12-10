@@ -99,7 +99,7 @@ public class UserTicketManagementService(
 
         var userTickets = await GetUserTicketsByDrawNumberAsync(draw.DrawNumber);
 
-        foreach (var userTicket in userTickets)
+        foreach (var userTicket in userTickets.Where(userTicket => userTicket.Status == UserTicketStatus.Paid))
         {
             if (userTicket.PaymentTransactionId != null)
             {

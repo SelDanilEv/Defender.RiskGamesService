@@ -34,49 +34,56 @@ public class LotteryProcessingService(
 
     public async Task HandleLotteryDraw(Guid drawId)
     {
+        var tasks = new List<Task>();
+        
         var draw = await lotteryDrawRepository.GetLotteryDrawAsync(drawId);
         
         if(!draw.IsProcessing || draw.IsProcessed)
         {
             return;
         }
-        
-        var numbers = Enumerable.Range(
-            draw.MinTicketNumber,
-            draw.TicketsAmount).ToArray();
-        Random.Shared.Shuffle(numbers);
 
-        var winnings = new List<Winning>();
-
-        int takenSoFar = 0;
-        foreach (var prize in draw.PrizeSetup!.Prizes!)
+        if (draw.Winnings.Count == 0)
         {
-            var winningTickets = numbers
-                .Skip(takenSoFar)
-                .Take(prize.TicketsAmount)
-                .ToList();
+            var numbers = Enumerable.Range(
+                draw.MinTicketNumber,
+                draw.TicketsAmount).ToArray();
+            Random.Shared.Shuffle(numbers);
 
-            winningTickets.Sort();
+            var winnings = new List<Winning>();
 
-            winnings.Add(new Winning
+            int takenSoFar = 0;
+            foreach (var prize in draw.PrizeSetup!.Prizes!)
             {
-                Coefficient = prize.Coefficient,
-                Tickets = winningTickets
-            });
+                var winningTickets = numbers
+                    .Skip(takenSoFar)
+                    .Take(prize.TicketsAmount)
+                    .ToList();
 
-            takenSoFar += prize.TicketsAmount;
+                winningTickets.Sort();
+
+                winnings.Add(new Winning
+                {
+                    Coefficient = prize.Coefficient,
+                    Tickets = winningTickets
+                });
+
+                takenSoFar += prize.TicketsAmount;
+            }
+
+            var updateRequest = UpdateModelRequest<LotteryDraw>
+                .Init(draw.Id)
+                .SetIfNotNull(x => x.Winnings, winnings)
+                .Set(x => x.IsProcessing, false)
+                .Set(x => x.IsProcessed, true);
+
+            draw.Winnings = winnings;
+            
+            tasks.Add(lotteryDrawRepository.UpdateLotteryDrawAsync(updateRequest));
         }
+        
+        tasks.Add(userTicketManagementService.CheckWinningsAsync(draw));
 
-        var updateRequest = UpdateModelRequest<LotteryDraw>
-            .Init(draw.Id)
-            .SetIfNotNull(x => x.Winnings, winnings)
-            .Set(x => x.IsProcessing, false)
-            .Set(x => x.IsProcessed, true);
-
-        draw.Winnings = winnings;
-
-        await Task.WhenAll(
-            userTicketManagementService.CheckWinningsAsync(draw),
-            lotteryDrawRepository.UpdateLotteryDrawAsync(updateRequest));
+        await Task.WhenAll(tasks);
     }
 }
