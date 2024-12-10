@@ -16,6 +16,8 @@ public class LotteryManagementService(
         ILotteryDrawRepository lotteryDrawRepository)
     : ILotteryManagementService
 {
+    #region Lotteries
+
     public async Task<LotteryModel> GetLotteryAsync(Guid lotteryId)
     {
         return await lotteryRepository.GetLotteryModelByIdAsync(lotteryId);
@@ -135,7 +137,27 @@ public class LotteryManagementService(
         await lotteryRepository.DeleteLotteryAsync(lotteryId);
     }
 
+    #endregion
+
     #region Lottery Draw
+
+    public async Task ScheduleDraws()
+    {
+        var lotteries = await lotteryRepository.GetAllLotteriesToScheduleAsync();
+
+        foreach (var lottery in lotteries)
+        {
+            var draw = LotteryDraw.Create(lottery);
+            var updateRequest = UpdateModelRequest<LotteryModel>
+                .Init(lottery.Id)
+                .SetIfNotNull(x => x.Schedule, lottery.Schedule!.UpdateNextStartDate());
+
+            await Task.WhenAll(
+                lotteryDrawRepository.CreateLotteryDrawAsync(draw),
+                lotteryRepository.UpdateLotteryAsync(updateRequest)
+            );
+        }
+    }
 
     public Task<LotteryDraw> GetLotteryDrawByNumberAsync(long drawNumber)
     {

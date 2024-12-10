@@ -5,11 +5,13 @@ using Defender.Mongo.MessageBroker.Interfaces.Topic;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace Defender.RiskGamesService.Application.Services.Background;
 
 public class TransactionStatusesListenerService(
+        ILogger<TransactionStatusesListenerService> logger,
         IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
@@ -28,6 +30,7 @@ public class TransactionStatusesListenerService(
                 var consumer = CreateTopicConsumer(scope);
                 var subscribeOption = CreateSubscribeOptions(scope);
 
+                logger.LogInformation("Ready to subscribe to outbox topic");
                 await consumer.SubscribeTopicAsync(subscribeOption, stoppingToken);
             }
             catch (OperationCanceledException)

@@ -15,6 +15,7 @@ public interface ILotteryManagementService
     Task DeactivateLotteryAsync(Guid lotteryId);
     Task DeleteLotteryAsync(Guid lotteryId);
 
+    Task ScheduleDraws();
     Task<LotteryDraw> GetLotteryDrawByNumberAsync(long drawNumber);
     Task<PagedResult<LotteryDraw>> GetActiveDrawAsync(PaginationRequest request);
 

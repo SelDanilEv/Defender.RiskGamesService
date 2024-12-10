@@ -2,5 +2,6 @@
 
 public interface ILotteryProcessingService
 {
-    Task ScanAndProcessLotteries();
+    Task QueueLotteriesForProcessing(CancellationToken cancellationToken = default);
+    Task HandleLotteryDraw(Guid drawId);
 }

@@ -32,11 +32,16 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
         return GetItemsAsync(settings);
     }
 
-    public async Task<LotteryDraw> GetLotteryDrawAsync(long drawNumber)
+    public Task<LotteryDraw> GetLotteryDrawAsync(Guid drawId)
+    {
+        return GetItemAsync(drawId);
+    }
+
+    public Task<LotteryDraw> GetLotteryDrawAsync(long drawNumber)
     {
         var filter = FindModelRequest<LotteryDraw>.Init(x => x.DrawNumber, drawNumber);
 
-        return await GetItemAsync(filter);
+        return GetItemAsync(filter);
     }
 
     public async Task<LotteryDraw> CreateLotteryDrawAsync(LotteryDraw lotteryDraw)
@@ -62,12 +67,9 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
         return lotteryDraw;
     }
 
-    public async Task ProcessLotteryDrawsAsync(
-        Func<LotteryDraw, Task> processAction,
+    public async Task<List<Guid>> GetLotteryDrawsToProcessAsync(
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(processAction);
-
         var options = new FindOptions<LotteryDraw>
         {
             CursorType = CursorType.NonTailable
@@ -75,26 +77,33 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
 
         var findRequest = FindModelRequest<LotteryDraw>
             .Init(x => x.EndDate, DateTime.UtcNow, FilterType.Lte)
-            .And(x => x.IsProcessed, false);
+            .And(x => x.IsProcessed, false)
+            .And(x => x.IsProcessing, false);
 
         using var cursor = await _mongoCollection.FindAsync(
             findRequest.BuildFilterDefinition(),
             options,
             cancellationToken);
 
+        var result = new List<Guid>();
+
         await cursor.ForEachAsync(async document =>
         {
-            var filter = Builders<LotteryDraw>.Filter.Eq(x => x.Id, document.Id);
+            findRequest = FindModelRequest<LotteryDraw>
+                .Init(x => x.Id,document.Id)
+                .And(x => x.IsProcessed, false)
+                .And(x => x.IsProcessing, false);
+            
             var update = Builders<LotteryDraw>.Update.Set(x => x.IsProcessing, true);
-            var options = new FindOneAndUpdateOptions<LotteryDraw>
+            var findAndUpdateOptions = new FindOneAndUpdateOptions<LotteryDraw>
             {
                 ReturnDocument = ReturnDocument.After
             };
 
             document = await _mongoCollection.FindOneAndUpdateAsync(
-                filter,
+                findRequest.BuildFilterDefinition(),
                 update,
-                options,
+                findAndUpdateOptions,
                 cancellationToken);
 
             if (document == null)
@@ -103,17 +112,23 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
                 return;
             }
 
-            await processAction(document);
-
-            update = Builders<LotteryDraw>.Update
-                .Set(x => x.IsProcessing, false)
-                .Set(x => x.IsProcessed, true);
-
-            await _mongoCollection.UpdateOneAsync(
-                filter,
-                update);
+            result.Add(document.Id);
         }, cancellationToken: cancellationToken);
 
+        return result;
+    }
+
+    public Task MarkDrawAsProcessedAsync(Guid drawId)
+    {
+        var filter = Builders<LotteryDraw>.Filter.Eq(x => x.Id, drawId);
+
+        var update = Builders<LotteryDraw>.Update
+            .Set(x => x.IsProcessing, false)
+            .Set(x => x.IsProcessed, true);
+
+        return _mongoCollection.UpdateOneAsync(
+            filter,
+            update);
     }
 
     public async Task<LotteryDraw> UpdateLotteryDrawAsync(
@@ -124,16 +139,10 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
 
     private async Task<long> GetNextDrawNumber()
     {
-        var highestDrawNumber = await CountItemsAsync();
+        var highestDrawNumber = await GetItemAsync(
+            FindModelRequest<LotteryDraw>.Init()
+                .Sort(x => x.DrawNumber, SortType.Desc));
 
-        return highestDrawNumber;
-    }
-
-    private async Task<bool> EnsureUniqueness(long drawNumber)
-    {
-        var highestDrawNumber = await CountItemsAsync(
-            FindModelRequest<LotteryDraw>.Init(x => x.DrawNumber, drawNumber));
-
-        return highestDrawNumber == 0;
+        return highestDrawNumber is null ? 0 : ++highestDrawNumber.DrawNumber;
     }
 }

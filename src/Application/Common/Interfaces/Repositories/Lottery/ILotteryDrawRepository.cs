@@ -7,10 +7,11 @@ namespace Defender.RiskGamesService.Application.Common.Interfaces.Repositories.L
 public interface ILotteryDrawRepository
 {
     Task<PagedResult<LotteryDraw>> GetActiveLotteryDrawsAsync(PaginationRequest request);
+    Task<LotteryDraw> GetLotteryDrawAsync(Guid drawId);
     Task<LotteryDraw> GetLotteryDrawAsync(long drawNumber);
     Task<LotteryDraw> CreateLotteryDrawAsync(LotteryDraw lotteryDraw);
-    Task ProcessLotteryDrawsAsync(
-        Func<LotteryDraw, Task> processAction,
+    Task<List<Guid>> GetLotteryDrawsToProcessAsync(
         CancellationToken cancellationToken = default);
+    Task MarkDrawAsProcessedAsync(Guid drawId);
     Task<LotteryDraw> UpdateLotteryDrawAsync(UpdateModelRequest<LotteryDraw> updateRequest);
 }

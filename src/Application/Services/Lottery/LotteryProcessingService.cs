@@ -1,48 +1,43 @@
 ﻿using Defender.Common.DB.Model;
+using Defender.Common.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
-using Defender.RiskGamesService.Domain.Entities.Lottery;
+using Defender.RiskGamesService.Common;
 using Defender.RiskGamesService.Domain.Entities.Lottery.Draw;
 using Defender.RiskGamesService.Domain.Enums;
 
 namespace Defender.RiskGamesService.Application.Services.Lottery;
 
 public class LotteryProcessingService(
-    ILotteryRepository lotteryRepository,
-    ILotteryDrawRepository lotteryDrawRepository,
-    IUserTicketManagementService userTicketManagementService,
-    ITransactionManagementService transactionManagementService)
+        IDefaultKafkaProducer<Guid> kafkaProducer,
+        ILotteryDrawRepository lotteryDrawRepository,
+        IUserTicketManagementService userTicketManagementService)
     : ILotteryProcessingService
 {
-    public async Task ScanAndProcessLotteries()
+    public async Task QueueLotteriesForProcessing(CancellationToken cancellationToken = default)
     {
-        await ScheduleDraws();
+        var drawIds = await lotteryDrawRepository
+            .GetLotteryDrawsToProcessAsync(cancellationToken);
 
-        await lotteryDrawRepository.ProcessLotteryDrawsAsync(HandleLotteryDraw);
-    }
-
-    private async Task ScheduleDraws()
-    {
-        var lotteries = await lotteryRepository.GetAllLotteriesToScheduleAsync();
-
-        foreach (var lottery in lotteries)
+        foreach (var drawId in drawIds)
         {
-            var draw = LotteryDraw.Create(lottery);
-            var updateRequest = UpdateModelRequest<LotteryModel>
-                .Init(lottery.Id)
-                .SetIfNotNull(x => x.Schedule, lottery.Schedule!.UpdateNextStartDate());
-
-            await Task.WhenAll(
-                lotteryDrawRepository.CreateLotteryDrawAsync(draw),
-                lotteryRepository.UpdateLotteryAsync(updateRequest)
-            );
+            await kafkaProducer.ProduceAsync(
+                KafkaTopic.LotteryToProcess.GetName(),
+                drawId,
+                cancellationToken);
         }
-
     }
 
-    private async Task HandleLotteryDraw(LotteryDraw draw)
+    public async Task HandleLotteryDraw(Guid drawId)
     {
+        var draw = await lotteryDrawRepository.GetLotteryDrawAsync(drawId);
+        
+        if(!draw.IsProcessing || draw.IsProcessed)
+        {
+            return;
+        }
+        
         var numbers = Enumerable.Range(
             draw.MinTicketNumber,
             draw.TicketsAmount).ToArray();
@@ -71,22 +66,14 @@ public class LotteryProcessingService(
 
         var updateRequest = UpdateModelRequest<LotteryDraw>
             .Init(draw.Id)
-            .SetIfNotNull(x => x.Winnings, winnings);
-
-        List<Task> tasks = [];
-
-        tasks.Add(lotteryDrawRepository
-            .UpdateLotteryDrawAsync(updateRequest));
-
-        await transactionManagementService
-            .CheckUnhandledTicketsForDrawAsync(
-                draw.DrawNumber.ToString(), GameType.Lottery);
+            .SetIfNotNull(x => x.Winnings, winnings)
+            .Set(x => x.IsProcessing, false)
+            .Set(x => x.IsProcessed, true);
 
         draw.Winnings = winnings;
-        tasks.Add(userTicketManagementService
-            .CheckWinningsAsync(draw));
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(
+            userTicketManagementService.CheckWinningsAsync(draw),
+            lotteryDrawRepository.UpdateLotteryDrawAsync(updateRequest));
     }
-
 }

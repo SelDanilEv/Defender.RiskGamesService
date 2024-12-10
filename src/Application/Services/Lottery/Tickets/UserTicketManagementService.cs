@@ -38,7 +38,7 @@ public class UserTicketManagementService(
     public async Task<IEnumerable<int>> PurchaseTicketsAsync(
         PurchaseLotteryTicketsRequest request)
     {
-        if (request == null || request?.TicketNumbers?.Count == 0)
+        if (request is null || request?.TicketNumbers?.Count == 0)
         {
             return [];
         }
@@ -46,7 +46,7 @@ public class UserTicketManagementService(
         var lotteryDraw = await lotteryManagementService
             .GetLotteryDrawByNumberAsync(request.DrawNumber);
 
-        if (lotteryDraw == null || !lotteryDraw.IsActive)
+        if (lotteryDraw is not { IsActive: true })
         {
             throw new ServiceException(ErrorCode.BR_RGS_LotteryDrawIsNotActive);
         }
@@ -92,6 +92,10 @@ public class UserTicketManagementService(
         {
             throw new ServiceException(ErrorCode.BR_RGS_LotteryIsStillActive);
         }
+        
+        await transactionManagementService
+            .CheckUnhandledTicketsForDrawAsync(
+                draw.DrawNumber.ToString(), GameType.Lottery);
 
         var userTickets = await GetUserTicketsByDrawNumberAsync(draw.DrawNumber);
 
@@ -103,20 +107,12 @@ public class UserTicketManagementService(
                     .StopTrackTransactionAsync(userTicket.PaymentTransactionId);
             }
 
-            var isWinning = false;
+            var winning = draw.Winnings!.Find(
+                w => w.Tickets.Contains(userTicket.TicketNumber));
 
-            foreach (var winning in draw.Winnings!)
+            if (winning is not null)
             {
-                if (winning.Tickets.Contains(userTicket.TicketNumber))
-                {
-                    await HandleWinningTicketAsync(userTicket, winning);
-                    isWinning = true;
-                    break;
-                }
-            }
-
-            if (isWinning)
-            {
+                await HandleWinningTicketAsync(userTicket, winning);
                 continue;
             }
 
