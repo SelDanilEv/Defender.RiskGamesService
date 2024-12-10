@@ -1,4 +1,5 @@
-﻿using Defender.Common.Kafka.Default;
+﻿using Defender.Common.Extension;
+using Defender.Common.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Common;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Defender.RiskGamesService.Application.Services.Background.Kafka;
 
 public class EventListenerService(
+    IHostEnvironment hostEnvironment,
     IDefaultKafkaConsumer<string> kafkaStringEventConsumer,
     IDefaultKafkaConsumer<Guid> lotteriesToProceedConsumer,
     ILotteryProcessingService lotteryProcessingService,
@@ -22,11 +24,11 @@ public class EventListenerService(
             {
                 await Task.WhenAll(
                     kafkaStringEventConsumer.StartConsuming(
-                        KafkaTopic.ScheduledTasks.GetName(),
+                        KafkaTopic.ScheduledTasks.GetName(hostEnvironment.GetAppEnvironment()),
                         HandleStringEvent,
                         stoppingToken),
                     lotteriesToProceedConsumer.StartConsuming(
-                        KafkaTopic.LotteryToProcess.GetName(),
+                        KafkaTopic.LotteryToProcess.GetName(hostEnvironment.GetAppEnvironment()),
                         lotteryProcessingService.HandleLotteryDraw,
                         stoppingToken)
                 );
