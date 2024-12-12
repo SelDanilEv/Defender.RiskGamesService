@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Common\Common.csproj" />
+        <PackageReference Include="MongoDB.Driver" Version="3.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
+        <PackageReference Include="Defender.Common" Version="1.4.1"/>
     </ItemGroup>
 
 </Project>
