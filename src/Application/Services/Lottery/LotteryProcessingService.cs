@@ -42,8 +42,13 @@ public class LotteryProcessingService(
         {
             return;
         }
+        
+        var finishDrawUpdateRequest = UpdateModelRequest<LotteryDraw>
+            .Init(draw.Id)
+            .Set(x => x.IsProcessing, false)
+            .Set(x => x.IsProcessed, true);
 
-        if (draw.Winnings.Count == 0)
+        if (draw.Winnings.Any(x => x.Tickets.Count == 0))
         {
             var numbers = Enumerable.Range(
                 draw.MinTicketNumber,
@@ -71,18 +76,15 @@ public class LotteryProcessingService(
                 takenSoFar += prize.TicketsAmount;
             }
 
-            var updateRequest = UpdateModelRequest<LotteryDraw>
-                .Init(draw.Id)
-                .SetIfNotNull(x => x.Winnings, winnings)
-                .Set(x => x.IsProcessing, false)
-                .Set(x => x.IsProcessed, true);
+            finishDrawUpdateRequest
+                .SetIfNotNull(x => x.Winnings, winnings);
 
             draw.Winnings = winnings;
-            
-            tasks.Add(lotteryDrawRepository.UpdateLotteryDrawAsync(updateRequest));
         }
         
         tasks.Add(userTicketManagementService.CheckWinningsAsync(draw));
+        
+        tasks.Add(lotteryDrawRepository.UpdateLotteryDrawAsync(finishDrawUpdateRequest));
 
         await Task.WhenAll(tasks);
     }
