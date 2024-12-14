@@ -8,7 +8,6 @@ using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
 using Defender.RiskGamesService.Application.Factories.Transaction;
 using Defender.RiskGamesService.Application.Mappings;
 using Defender.RiskGamesService.Application.Models.Transaction;
-using Defender.RiskGamesService.Domain.Entities.Transactions;
 using Defender.RiskGamesService.Domain.Enums;
 
 namespace Defender.RiskGamesService.Application.Services.Transaction;
@@ -16,61 +15,13 @@ namespace Defender.RiskGamesService.Application.Services.Transaction;
 public class TransactionManagementService(
         IWalletWrapper walletWrapper,
         ITransactionToTrackRepository transactionToTrackRepository,
-        IOutboxTransactionStatusRepository outboxTransactionStatusRepository,
         TransactionHandlerFactory transactionHandlerFactory)
     : ITransactionManagementService
 {
-    public async Task ScanAndProcessOutboxTableAsync()
-    {
-        var outboxTransactions = await outboxTransactionStatusRepository.GetAllAsync();
-
-        var tasks = outboxTransactions.Select(ProcessOutboxTransactionAsync);
-
-        await Task.WhenAll(tasks);
-    }
-
-    public async Task ProcessOutboxTransactionAsync(
-        OutboxTransactionStatus transactionStatus)
-    {
-        if (!await outboxTransactionStatusRepository
-            .TryLockTransactionStatusToHandleAsync(transactionStatus.Id))
-            return;
-
-        var isHandled = await HandleTransactionStatusUpdatedAsync(
-            transactionStatus.ConvertToStatusUpdatedEvent());
-
-        if (isHandled)
-        {
-            await outboxTransactionStatusRepository
-                .DeleteTransactonStatusAsync(transactionStatus.Id);
-            return;
-        }
-
-        if (transactionStatus.Attempt < 3)
-        {
-            await Task.WhenAll(
-                outboxTransactionStatusRepository
-                    .IncreaseAttemptCountAsync(transactionStatus),
-                outboxTransactionStatusRepository
-                    .ReleaseTransactionStatusAsync(transactionStatus.Id));
-            return;
-        }
-
-        await Task.WhenAll(
-            outboxTransactionStatusRepository
-                .DeleteTransactonStatusAsync(transactionStatus.Id),
-            StopTrackTransactionAsync(transactionStatus.TransactionId));
-    }
-
     public async Task HandleTransactionStatusUpdatedEvent(
         TransactionStatusUpdatedEvent @event)
     {
-        var outboxRecord = OutboxTransactionStatus.CreateFromStatusUpdatedEvent(@event);
-
-        await outboxTransactionStatusRepository
-            .CreateTransactionStatusAsync(outboxRecord);
-
-        await ProcessOutboxTransactionAsync(outboxRecord);
+        await HandleTransactionStatusUpdatedAsync(@event);
     }
 
     public async Task<AnonymousTransactionModel?> TryGetTransactionInfoAsync(
@@ -167,7 +118,7 @@ public class TransactionManagementService(
         var transactionToTrack = await transactionToTrackRepository
             .GetTransactionAsync(transactionInfo.TransactionId);
 
-        if (transactionToTrack == null)
+        if (transactionToTrack is null)
         {
             return false;
         }

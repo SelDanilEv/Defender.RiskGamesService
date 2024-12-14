@@ -1,23 +1,22 @@
 ﻿using Defender.Common.Configuration.Options.Kafka;
-using Defender.Common.Extension;
 using Defender.Common.Kafka.BackgroundServices;
-using Defender.RiskGamesService.Common;
-using Microsoft.Extensions.Hosting;
+using Defender.Common.Kafka.Service;
+using Defender.RiskGamesService.Common.Kafka;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Defender.RiskGamesService.Application.Services.Background.Kafka;
 
 public class CreateKafkaTopicsService(
-    IHostEnvironment hostEnvironment,
+    IKafkaTopicNameResolver kafkaTopicNameResolver,
     IOptions<KafkaOptions> kafkaOptions,
     ILogger<CreateKafkaTopicsService> logger)
     : EnsureTopicsCreatedService(kafkaOptions, logger)
 {
     protected override IEnumerable<string> Topics =>
         [
-            KafkaTopic.ScheduledTasks.GetName(hostEnvironment.GetAppEnvironment()),
-            KafkaTopic.LotteryToProcess.GetName(hostEnvironment.GetAppEnvironment())
+            kafkaTopicNameResolver.ResolveTopicName(KafkaTopic.ScheduledTasks.GetName()),
+            kafkaTopicNameResolver.ResolveTopicName(KafkaTopic.LotteryToProcess.GetName()),
         ];
 
     protected override short ReplicationFactor => 1;

@@ -1,4 +1,4 @@
-﻿namespace Defender.RiskGamesService.Common;
+﻿namespace Defender.RiskGamesService.Common.Kafka;
 
 public enum KafkaEvent
 {

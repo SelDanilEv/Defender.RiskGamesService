@@ -60,6 +60,15 @@ public class LotteryRepository(IOptions<MongoDbOptions> mongoOption)
         return UpdateItemAsync(request);
     }
 
+    public Task<LotteryModel> UpdateLotteryAsync(
+        UpdateModelRequest<LotteryModel> request,
+        FindModelRequest<LotteryModel> filter)
+    {
+        request.SetIfNotNull(x => x.UpdatedDate, DateTime.UtcNow);
+
+        return UpdateItemAsync(request,filter);
+    }
+
     public Task DeleteLotteryAsync(Guid lotteryId)
     {
         return RemoveItemAsync(lotteryId);

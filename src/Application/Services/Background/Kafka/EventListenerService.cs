@@ -1,14 +1,12 @@
-﻿using Defender.Common.Extension;
-using Defender.Common.Kafka.Default;
+﻿using Defender.Common.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
-using Defender.RiskGamesService.Common;
+using Defender.RiskGamesService.Common.Kafka;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Defender.RiskGamesService.Application.Services.Background.Kafka;
 
 public class EventListenerService(
-    IHostEnvironment hostEnvironment,
     IDefaultKafkaConsumer<string> kafkaStringEventConsumer,
     IDefaultKafkaConsumer<Guid> lotteriesToProceedConsumer,
     ILotteryProcessingService lotteryProcessingService,
@@ -18,26 +16,17 @@ public class EventListenerService(
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Delay(10_000, stoppingToken);
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            try
-            {
-                await Task.WhenAll(
-                    kafkaStringEventConsumer.StartConsuming(
-                        KafkaTopic.ScheduledTasks.GetName(hostEnvironment.GetAppEnvironment()),
-                        HandleStringEvent,
-                        stoppingToken),
-                    lotteriesToProceedConsumer.StartConsuming(
-                        KafkaTopic.LotteryToProcess.GetName(hostEnvironment.GetAppEnvironment()),
-                        lotteryProcessingService.HandleLotteryDraw,
-                        stoppingToken)
-                );
-            }
-            finally
-            {
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-            }
-        }
+
+        await Task.WhenAll(
+            kafkaStringEventConsumer.StartConsuming(
+                KafkaTopic.ScheduledTasks.GetName(),
+                HandleStringEvent,
+                stoppingToken),
+            lotteriesToProceedConsumer.StartConsuming(
+                KafkaTopic.LotteryToProcess.GetName(),
+                lotteryProcessingService.HandleLotteryDraw,
+                stoppingToken)
+        );
     }
 
     private Task HandleStringEvent(string @event)

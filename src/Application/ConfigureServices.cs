@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Defender.Common.Configuration.Options.Kafka;
-using Defender.Common.Extension.Kafka;
-using Defender.Common.Extensions;
+using Defender.Common.Kafka.Extension;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
 using Defender.RiskGamesService.Application.Factories.Transaction;
@@ -39,16 +38,10 @@ public static class ConfigureServices
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<KafkaOptions>(configuration.GetSection(nameof(KafkaOptions)));
-
-        services.AddJsonSerializer();
-
-        services.AddDefaultKafkaConsumer();
-        services.AddDefaultKafkaProducer();
-        
-        services.AddHostedService<CreateKafkaTopicsService>();
-
-        services.AddHostedService<EventListenerService>();
+        services.AddKafka(options =>
+        {
+            configuration.GetSection(nameof(KafkaOptions)).Bind(options);
+        });
 
         return services;
     }
@@ -56,6 +49,10 @@ public static class ConfigureServices
     private static IServiceCollection RegisterBackgroundServices(
         this IServiceCollection services)
     {
+        services.AddHostedService<CreateKafkaTopicsService>();
+        
+        services.AddHostedService<EventListenerService>();
+        
         services.AddHostedService<TransactionStatusesListenerService>();
 
         return services;

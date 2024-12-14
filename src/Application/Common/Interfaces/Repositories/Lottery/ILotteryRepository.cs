@@ -11,6 +11,11 @@ public interface ILotteryRepository
         PaginationRequest pagination, string? name);
     Task<LotteryModel> GetLotteryModelByIdAsync(Guid id);
     Task<LotteryModel> CreateNewLotteryAsync(LotteryModel newLottery);
+    
     Task<LotteryModel> UpdateLotteryAsync(UpdateModelRequest<LotteryModel> request);
+    Task<LotteryModel> UpdateLotteryAsync(
+        UpdateModelRequest<LotteryModel> request,
+        FindModelRequest<LotteryModel> filter);
+    
     Task DeleteLotteryAsync(Guid lotteryId);
 }

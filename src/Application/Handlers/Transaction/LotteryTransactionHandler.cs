@@ -50,7 +50,7 @@ public class LotteryTransactionHandler(
                 break;
 
             default:
-                break;
+                return HandleGameTransactionResult.KeepTrackingResult;
         }
 
         return HandleGameTransactionResult.StopTrackingResult;

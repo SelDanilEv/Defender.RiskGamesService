@@ -20,10 +20,10 @@ builder.Logging.ClearProviders()
     .AddSerilog(logger)
     .AddConsole();
 
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-builder.Services.AddWebUIServices(builder.Environment, builder.Configuration);
-builder.Services.AddApplicationServices(builder.Configuration);
-builder.Services.AddInfrastructureServices(builder.Configuration, builder.Environment);
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration)
+    .AddWebUIServices(builder.Environment, builder.Configuration)
+    .AddApplicationServices(builder.Configuration)
+    .AddInfrastructureServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 

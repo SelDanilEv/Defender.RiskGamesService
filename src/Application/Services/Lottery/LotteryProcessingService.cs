@@ -1,18 +1,13 @@
 ﻿using Defender.Common.DB.Model;
-using Defender.Common.Extension;
 using Defender.Common.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
-using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
-using Defender.RiskGamesService.Common;
+using Defender.RiskGamesService.Common.Kafka;
 using Defender.RiskGamesService.Domain.Entities.Lottery.Draw;
-using Defender.RiskGamesService.Domain.Enums;
-using Microsoft.Extensions.Hosting;
 
 namespace Defender.RiskGamesService.Application.Services.Lottery;
 
 public class LotteryProcessingService(
-        IHostEnvironment hostEnvironment,
         IDefaultKafkaProducer<Guid> kafkaProducer,
         ILotteryDrawRepository lotteryDrawRepository,
         IUserTicketManagementService userTicketManagementService)
@@ -26,7 +21,7 @@ public class LotteryProcessingService(
         foreach (var drawId in drawIds)
         {
             await kafkaProducer.ProduceAsync(
-                KafkaTopic.LotteryToProcess.GetName(hostEnvironment.GetAppEnvironment()),
+                KafkaTopic.LotteryToProcess.GetName(),
                 drawId,
                 cancellationToken);
         }

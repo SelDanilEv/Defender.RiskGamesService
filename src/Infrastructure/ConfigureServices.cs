@@ -1,9 +1,5 @@
 ﻿using System.Reflection;
 using Defender.Common.Clients.Wallet;
-using Defender.Common.DB.SharedStorage.Entities;
-using Defender.Common.DB.SharedStorage.Options;
-using Defender.Common.Extension;
-using Defender.Mongo.MessageBroker.Extensions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Transactions;
 using Defender.RiskGamesService.Application.Common.Interfaces.Wrapper;
@@ -30,8 +26,7 @@ public static class ConfigureServices
         services
             .RegisterRepositories()
             .RegisterApiClients(configuration)
-            .RegisterClientWrappers()
-            .RegisterMessageBroker(environment);
+            .RegisterClientWrappers();
 
         return services;
     }
@@ -43,18 +38,6 @@ public static class ConfigureServices
         return services;
     }
 
-    private static IServiceCollection RegisterMessageBroker(
-        this IServiceCollection services,
-        IHostEnvironment environment)
-    {
-        services.AddTopicConsumer<TransactionStatusUpdatedEvent>(opt =>
-        {
-            opt.ApplyOptions(new TransactionStatusesTopicConsumerOptions(environment.GetAppEnvironment()));
-        });
-
-        return services;
-    }
-
     private static IServiceCollection RegisterRepositories(this IServiceCollection services)
     {
         services.AddSingleton<ILotteryRepository, LotteryRepository>();
@@ -62,7 +45,6 @@ public static class ConfigureServices
         services.AddSingleton<ILotteryUserTicketRepository, LotteryUserTicketRepository>();
 
         services.AddSingleton<ITransactionToTrackRepository, TransactionToTrackRepository>();
-        services.AddSingleton<IOutboxTransactionStatusRepository, OutboxTransactionStatusRepository>();
 
         return services;
     }
