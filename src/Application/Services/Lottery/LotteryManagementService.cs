@@ -148,13 +148,13 @@ public class LotteryManagementService(
         foreach (var lottery in lotteries)
         {
             var draw = LotteryDraw.Create(lottery);
-            
+
             var filter = FindModelRequest<LotteryModel>
                 .Init(x => x.Id, lottery.Id)
                 .And(x => x.IsActive, true)
                 .And(x => x.IncomePercentage, 0, FilterType.Gt)
                 .And(x => x.Schedule!.NextStartDate, DateTime.UtcNow, FilterType.Lte);
-                
+
             var updateRequest = UpdateModelRequest<LotteryModel>
                 .Init(lottery.Id)
                 .SetIfNotNull(x => x.Schedule, lottery.Schedule!.UpdateNextStartDate());

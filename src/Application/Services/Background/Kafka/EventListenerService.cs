@@ -1,5 +1,4 @@
-﻿using Defender.Common.Kafka.Default;
-using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
+﻿using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Common.Kafka;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

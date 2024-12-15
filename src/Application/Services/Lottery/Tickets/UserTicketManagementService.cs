@@ -92,7 +92,7 @@ public class UserTicketManagementService(
         {
             throw new ServiceException(ErrorCode.BR_RGS_LotteryIsStillActive);
         }
-        
+
         await transactionManagementService
             .CheckUnhandledTicketsForDrawAsync(
                 draw.DrawNumber.ToString(), GameType.Lottery);

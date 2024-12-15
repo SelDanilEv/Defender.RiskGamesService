@@ -1,7 +1,5 @@
 ﻿using Defender.Common.DB.SharedStorage.Entities;
 using Defender.Common.DB.SharedStorage.Enums;
-using Defender.Common.Kafka;
-using Defender.Common.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +22,7 @@ public class TransactionStatusesListenerService(
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Delay(10_000, stoppingToken);
-        
+
         await updatedStatusesConsumer.StartConsuming(
             Topic.TransactionStatusUpdates.GetName(),
             HandleTransactionStatusUpdatedEvent,

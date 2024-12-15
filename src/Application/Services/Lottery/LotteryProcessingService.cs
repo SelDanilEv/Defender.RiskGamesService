@@ -1,5 +1,4 @@
 ﻿using Defender.Common.DB.Model;
-using Defender.Common.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Common.Kafka;
@@ -30,14 +29,14 @@ public class LotteryProcessingService(
     public async Task HandleLotteryDraw(Guid drawId)
     {
         var tasks = new List<Task>();
-        
+
         var draw = await lotteryDrawRepository.GetLotteryDrawAsync(drawId);
-        
-        if(!draw.IsProcessing || draw.IsProcessed)
+
+        if (!draw.IsProcessing || draw.IsProcessed)
         {
             return;
         }
-        
+
         var finishDrawUpdateRequest = UpdateModelRequest<LotteryDraw>
             .Init(draw.Id)
             .Set(x => x.IsProcessing, false)
@@ -76,9 +75,9 @@ public class LotteryProcessingService(
 
             draw.Winnings = winnings;
         }
-        
+
         tasks.Add(userTicketManagementService.CheckWinningsAsync(draw));
-        
+
         tasks.Add(lotteryDrawRepository.UpdateLotteryDrawAsync(finishDrawUpdateRequest));
 
         await Task.WhenAll(tasks);

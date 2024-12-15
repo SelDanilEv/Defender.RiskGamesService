@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
-using Defender.Common.Configuration.Options.Kafka;
-using Defender.Common.Kafka.Extension;
+using Defender.Kafka.Configuration.Options;
+using Defender.Kafka.Extension;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
 using Defender.RiskGamesService.Application.Factories.Transaction;
 using Defender.RiskGamesService.Application.Handlers.Transaction;
-using Defender.RiskGamesService.Application.Services.Background;
 using Defender.RiskGamesService.Application.Services.Background.Kafka;
 using Defender.RiskGamesService.Application.Services.Lottery;
 using Defender.RiskGamesService.Application.Services.Lottery.Tickets;
@@ -50,9 +49,9 @@ public static class ConfigureServices
         this IServiceCollection services)
     {
         services.AddHostedService<CreateKafkaTopicsService>();
-        
+
         services.AddHostedService<EventListenerService>();
-        
+
         services.AddHostedService<TransactionStatusesListenerService>();
 
         return services;

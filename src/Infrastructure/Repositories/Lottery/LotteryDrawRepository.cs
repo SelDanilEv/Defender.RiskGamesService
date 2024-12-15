@@ -90,10 +90,10 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
         await cursor.ForEachAsync(async document =>
         {
             findRequest = FindModelRequest<LotteryDraw>
-                .Init(x => x.Id,document.Id)
+                .Init(x => x.Id, document.Id)
                 .And(x => x.IsProcessed, false)
                 .And(x => x.IsProcessing, false);
-            
+
             var update = Builders<LotteryDraw>.Update.Set(x => x.IsProcessing, true);
             var findAndUpdateOptions = new FindOneAndUpdateOptions<LotteryDraw>
             {
