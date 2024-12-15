@@ -1,4 +1,5 @@
 ﻿using Defender.Common.DB.Model;
+using Defender.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Repositories.Lottery;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Lottery;
 using Defender.RiskGamesService.Common.Kafka;

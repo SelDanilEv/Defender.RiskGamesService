@@ -1,5 +1,7 @@
 ﻿using Defender.Common.DB.SharedStorage.Entities;
 using Defender.Common.DB.SharedStorage.Enums;
+using Defender.Kafka;
+using Defender.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
