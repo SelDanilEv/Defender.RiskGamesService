@@ -33,6 +33,8 @@ public class EventListenerService(
     {
         try
         {
+            logger.LogInformation("Incoming event: {0}", @event);
+
             switch (@event.ToEvent())
             {
                 case KafkaEvent.StartLotteriesProcessing:
