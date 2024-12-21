@@ -31,17 +31,23 @@ public class EventListenerService(
 
     private Task HandleStringEvent(string @event)
     {
-        switch (@event.ToEvent())
+        try
         {
-            case KafkaEvent.StartLotteriesProcessing:
-                _ = lotteryProcessingService.QueueLotteriesForProcessing();
-                break;
-            case KafkaEvent.ScheduleNewLotteryDraws:
-                _ = lotteryManagementService.ScheduleDraws();
-                break;
-            default:
-                logger.LogWarning("Unknown event: {0}", @event);
-                break;
+            switch (@event.ToEvent())
+            {
+                case KafkaEvent.StartLotteriesProcessing:
+                    _ = lotteryProcessingService.QueueLotteriesForProcessing();
+                    break;
+                case KafkaEvent.ScheduleNewLotteryDraws:
+                    _ = lotteryManagementService.ScheduleDraws();
+                    break;
+                default:
+                    logger.LogWarning("Unknown event: {0}", @event);
+                    break;
+            }
+        }
+        catch (Exception ex) {
+            logger.LogError(ex, "Error while handling event: {0}", @event);
         }
 
         return Task.CompletedTask;
