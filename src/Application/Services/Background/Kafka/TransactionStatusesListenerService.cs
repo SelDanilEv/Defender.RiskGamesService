@@ -3,6 +3,7 @@ using Defender.Common.DB.SharedStorage.Enums;
 using Defender.Kafka;
 using Defender.Kafka.Default;
 using Defender.RiskGamesService.Application.Common.Interfaces.Services.Transaction;
+using Defender.RiskGamesService.Common.Kafka;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -27,6 +28,7 @@ public class TransactionStatusesListenerService(
 
         await updatedStatusesConsumer.StartConsuming(
             Topic.TransactionStatusUpdates.GetName(),
+            ConsumerGroup.Primary.GetName(),
             HandleTransactionStatusUpdatedEvent,
             stoppingToken);
     }

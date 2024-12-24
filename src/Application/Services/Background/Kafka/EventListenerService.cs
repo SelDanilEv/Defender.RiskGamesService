@@ -20,10 +20,12 @@ public class EventListenerService(
         await Task.WhenAll(
             kafkaStringEventConsumer.StartConsuming(
                 KafkaTopic.ScheduledTasks.GetName(),
+                ConsumerGroup.Primary.GetName(),
                 HandleStringEvent,
                 stoppingToken),
             lotteriesToProceedConsumer.StartConsuming(
                 KafkaTopic.LotteryToProcess.GetName(),
+                ConsumerGroup.Primary.GetName(),
                 lotteryProcessingService.HandleLotteryDraw,
                 stoppingToken)
         );
@@ -33,7 +35,7 @@ public class EventListenerService(
     {
         try
         {
-            logger.LogInformation("Incoming event: {0}", @event);
+            logger.LogInformation("Incoming event: {Event}", @event);
 
             switch (@event.ToEvent())
             {
@@ -44,12 +46,12 @@ public class EventListenerService(
                     await lotteryManagementService.ScheduleDraws();
                     break;
                 default:
-                    logger.LogWarning("Unknown event: {0}", @event);
+                    logger.LogWarning("Unknown event: {Event}", @event);
                     break;
             }
         }
         catch (Exception ex) {
-            logger.LogError(ex, "Error while handling event: {0}", @event);
+            logger.LogError(ex, "Error while handling event: {Event}", @event);
         }
     }
 }

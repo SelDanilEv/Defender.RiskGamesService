@@ -8,15 +8,15 @@ using Microsoft.Extensions.Options;
 namespace Defender.RiskGamesService.Application.Services.Background.Kafka;
 
 public class CreateKafkaTopicsService(
-    IKafkaTopicNameResolver kafkaTopicNameResolver,
     IOptions<KafkaOptions> kafkaOptions,
+    IKafkaEnvPrefixer kafkaEnvPrefixer,
     ILogger<CreateKafkaTopicsService> logger)
-    : EnsureTopicsCreatedService(kafkaOptions, logger)
+    : EnsureTopicsCreatedService(kafkaOptions,kafkaEnvPrefixer, logger)
 {
     protected override IEnumerable<string> Topics =>
         [
-            kafkaTopicNameResolver.ResolveTopicName(KafkaTopic.ScheduledTasks.GetName()),
-            kafkaTopicNameResolver.ResolveTopicName(KafkaTopic.LotteryToProcess.GetName()),
+            KafkaTopic.ScheduledTasks.GetName(),
+            KafkaTopic.LotteryToProcess.GetName(),
         ];
 
     protected override short ReplicationFactor => 1;

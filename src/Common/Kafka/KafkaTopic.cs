@@ -8,13 +8,11 @@ public enum KafkaTopic
 
 public static class KafkaTopicExtensions
 {
-    private const string ServiceName = "RiskGamesService";
-
     private static readonly Dictionary<KafkaTopic, string> TopicToStringMap =
         new()
         {
-            { KafkaTopic.ScheduledTasks, $"{ServiceName}_scheduled-tasks-topic" },
-            { KafkaTopic.LotteryToProcess, $"{ServiceName}_lottery-to-process" },
+            { KafkaTopic.ScheduledTasks, $"{AppConstants.ServiceName}_scheduled-tasks-topic" },
+            { KafkaTopic.LotteryToProcess, $"{AppConstants.ServiceName}_lottery-to-process" },
         };
 
 
