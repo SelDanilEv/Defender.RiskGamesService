@@ -4,7 +4,7 @@ public enum KafkaEvent
 {
     Unknown,
     ScheduleNewLotteryDraws,
-    StartLotteriesProcessing
+    StartLotteriesProcessing,
 }
 
 public static class KafkaEventExtensions
