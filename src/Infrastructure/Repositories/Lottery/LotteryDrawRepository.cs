@@ -14,9 +14,17 @@ public class LotteryDrawRepository : BaseMongoRepository<LotteryDraw>, ILotteryD
 {
     public LotteryDrawRepository(IOptions<MongoDbOptions> mongoOption) : base(mongoOption.Value)
     {
-        _mongoCollection.Indexes.CreateOne(new CreateIndexModel<LotteryDraw>(
-            Builders<LotteryDraw>.IndexKeys.Ascending(x => x.DrawNumber),
-            new CreateIndexOptions { Unique = true }));
+        _mongoCollection.Indexes.CreateMany([
+            new CreateIndexModel<LotteryDraw>(
+                Builders<LotteryDraw>.IndexKeys.Ascending(x => x.DrawNumber),
+                new CreateIndexOptions { Unique = true, Name = "DrawNumber_Index" }),
+            new CreateIndexModel<LotteryDraw>(
+                Builders<LotteryDraw>.IndexKeys
+                    .Descending(x => x.EndDate)
+                    .Descending(x => x.IsProcessed)
+                    .Descending(x => x.IsProcessing),
+                new CreateIndexOptions { Name = "EndDate_IsProcessed_IsProcessing" })
+        ]);
     }
 
     public Task<PagedResult<LotteryDraw>> GetActiveLotteryDrawsAsync(PaginationRequest request)
