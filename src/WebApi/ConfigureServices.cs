@@ -184,6 +184,5 @@ public static class ConfigureServices
             problemDetails.Status = StatusCodes.Status500InternalServerError;
             return problemDetails;
         });
-        ;
     }
 }

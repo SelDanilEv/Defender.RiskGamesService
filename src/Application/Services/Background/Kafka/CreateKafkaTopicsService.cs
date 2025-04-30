@@ -11,7 +11,7 @@ public class CreateKafkaTopicsService(
     IOptions<KafkaOptions> kafkaOptions,
     IKafkaEnvPrefixer kafkaEnvPrefixer,
     ILogger<CreateKafkaTopicsService> logger)
-    : EnsureTopicsCreatedService(kafkaOptions,kafkaEnvPrefixer, logger)
+    : EnsureTopicsCreatedService(kafkaOptions, kafkaEnvPrefixer, logger)
 {
     protected override IEnumerable<string> Topics =>
         [
